@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage
 from django.contrib.auth.decorators import login_required
 from .form import UserForm
 import traceback
-from .models import Project
+from .models import Project, Model
 
 # 封装分页函数
 def get_paginator(request,data):
@@ -82,6 +82,16 @@ def login(request):
 def register(request):
     return render(request, 'register.html')
 
+def module(request):
+    if request.method == "GET":
+        modules =Model.objects.filter().order_by('-id')
+        return render(request,'module.html',{'modules':get_paginator(request, modules)})
+    else:
+        proj_name = request.POST['proj_name']
+        projects = Project.objects.filter(name__contains=proj_name.strip())
+        projs =[proj.id for proj in projects]
+        modules = Model.objects.filter(belong_project__in=projs)
+        return render(request,'module.html',{'modules':get_paginator(request, modules),'proj_name':proj_name.strip()})
 
 # 登出的视图函数：重定向至login视图函数
 @login_required
