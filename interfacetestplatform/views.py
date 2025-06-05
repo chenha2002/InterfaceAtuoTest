@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage
 from django.contrib.auth.decorators import login_required
 from .form import UserForm
 import traceback
-from .models import Project, Model
+from .models import Project, Model, TestCase
 
 # 封装分页函数
 def get_paginator(request,data):
@@ -81,7 +81,7 @@ def login(request):
 # 注册页的视图函数
 def register(request):
     return render(request, 'register.html')
-
+@login_required
 def module(request):
     if request.method == "GET":
         modules =Model.objects.filter().order_by('-id')
@@ -92,6 +92,25 @@ def module(request):
         projs =[proj.id for proj in projects]
         modules = Model.objects.filter(belong_project__in=projs)
         return render(request,'module.html',{'modules':get_paginator(request, modules),'proj_name':proj_name.strip()})
+
+
+# 测试用例菜单
+@login_required
+def test_case(request):
+    print("request.session['is_login']: {}".format(request.session['is_login']))
+    test_cases = ""
+    if request.method == "GET":
+        test_cases = TestCase.objects.filter().order_by('id')
+        print("testcases in testcase: {}".format(test_cases))
+    elif request.method == "POST":
+        print("request.POST: {}".format(request.POST))
+        test_case_id_list = request.POST.getlist('testcases_list')
+        if test_case_id_list:
+            test_case_id_list.sort()
+            print("test_case_id_list: {}".format(test_case_id_list))
+        test_cases = TestCase.objects.filter().order_by('id')
+    return render(request, 'test_case.html', {'test_cases': get_paginator(request, test_cases)})
+
 
 # 登出的视图函数：重定向至login视图函数
 @login_required
