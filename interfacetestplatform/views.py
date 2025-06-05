@@ -111,6 +111,16 @@ def test_case(request):
         test_cases = TestCase.objects.filter().order_by('id')
     return render(request, 'test_case.html', {'test_cases': get_paginator(request, test_cases)})
 
+# 用例详情
+@login_required
+def test_case_detail(request,test_case_id):
+    test_case_id = int(test_case_id)
+    test_case = TestCase.objects.get(id=test_case_id)
+    print("test_case: {}".format(test_case))
+    print("test_case_id: {}".format(test_case_id))
+    print("test_case.belong_project: {}".format(test_case.belong_project))
+    return render(request, 'test_case_detail.html', {'test_case': test_case})
+
 
 # 登出的视图函数：重定向至login视图函数
 @login_required
