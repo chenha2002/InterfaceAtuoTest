@@ -9,6 +9,7 @@
         <table class="table table-striped">
             <thead>
             <tr>
+                <th>id</th>
                 <th>用例名称</th>
                 <th>所属项目</th>
                 <th>所属模块</th>
@@ -23,6 +24,7 @@
 
             {% for test_case in test_cases %}
             <tr>
+                 <td>{{ test_case.id }}</td>
                 <td><a href="{% url 'test_case_detail' test_case.id%}">{{ test_case.case_name }}</a></td>
                 <td>{{ test_case.belong_project.name }}</td>
                 <td>{{ test_case.belong_module.name }}</td>

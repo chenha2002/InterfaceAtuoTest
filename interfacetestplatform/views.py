@@ -121,6 +121,15 @@ def test_case_detail(request,test_case_id):
     print("test_case.belong_project: {}".format(test_case.belong_project))
     return render(request, 'test_case_detail.html', {'test_case': test_case})
 
+# 模块展示测试用例
+@login_required
+def module_test_cases(request,module_id):
+    module = ""
+    if module_id:
+        module = Model.objects.get(id=int(module_id))
+    test_cases = TestCase.objects.filter(belong_module=module).order_by('-id')
+    return render(request, 'test_case.html', {'test_cases': get_paginator(request, test_cases)})
+
 
 # 登出的视图函数：重定向至login视图函数
 @login_required
