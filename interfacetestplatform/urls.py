@@ -13,4 +13,5 @@ urlpatterns = [
     re_path('module_test_cases/(?P<module_id>[0-9]+)/$', views.module_test_cases, name="module_test_cases"),
     path('case_suite/',views.test_suite,name="case_suite"),
     re_path('add_case_in_suite/(?P<suite_id>[0-9]+)', views.add_case_in_suite, name="add_case_in_suite"),
+    re_path('show_and_delete_case_in_suite/(?P<suite_id>[0-9]+)', views.show_and_delete_case_in_suite, name="show_and_delete_case_in_suite"),
 ]

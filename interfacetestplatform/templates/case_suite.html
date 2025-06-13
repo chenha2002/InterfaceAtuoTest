@@ -26,7 +26,7 @@
                 <td>{{ case_suite.suite_desc }}</td>
                 <td>{{ case_suite.creator }}</td>
                 <td>{{ case_suite.create_time|date:"Y-n-d H:i" }}</td>
-                <td><a href="">查看/删除测试用例</a></td>
+                <td><a href="{% url 'show_and_delete_case_in_suite' case_suite.id %}">查看/删除测试用例</a></td>
                 <td><a href="{% url 'add_case_in_suite' case_suite.id %}">添加测试用例</a></td>
                 <td><a href="">查看用例集合执行结果</a></td>
             </tr>

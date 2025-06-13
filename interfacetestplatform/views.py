@@ -163,6 +163,25 @@ def add_case_in_suite(request,suite_id):
     return render(request,'add_case_in_suite.html',{'test_cases': get_paginator(request, test_cases),'case_suite':case_suite})
 
 
+# 用例集合—查看/删除
+@login_required
+def show_and_delete_case_in_suite(request,suite_id):
+    case_suite = CaseSuite.objects.get(id = int(suite_id))
+    test_cases = SuiteCase.objects.filter(case_suite=case_suite)
+    if request.method == "POST":
+        test_cases_list = request.POST.getlist("test_cases_list")
+        if test_cases_list:
+            print("勾选用例",test_cases_list)
+            for test_case in test_cases_list:
+                test_case = TestCase.objects.get(id=int(test_case))
+                SuiteCase.objects.filter(case_suite=case_suite,test_case=test_case).delete()
+        else:
+            print("测试用例删除失败")
+            return HttpResponse("所选测试用例为空，请选择用例后再进行删除！")
+    case_suite = CaseSuite.objects.get(id=int(suite_id))
+    return render(request,'show_and_delete_case_in_suite.html',{'test_cases': get_paginator(request, test_cases),'case_suite':case_suite})
+
+
 
 
 
