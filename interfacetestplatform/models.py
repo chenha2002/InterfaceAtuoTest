@@ -70,3 +70,10 @@ class CaseSuite(models.Model):
     class Meta:
         verbose_name = '用例集合表'
         verbose_name_plural = '用例集合表'
+
+class SuiteCase(models.Model):
+    id = models.AutoField(primary_key=True)
+    case_suite =models.ForeignKey(CaseSuite,on_delete=models.CASCADE,verbose_name='用例集合')
+    test_case = models.ForeignKey(TestCase,on_delete=models.CASCADE,verbose_name='测试用例')
+    status = models.IntegerField('是否有效',null=False,default=1,help_text='0：有效，1：无效')
+    create_time = models.DateTimeField('创建时间',auto_now=True)
