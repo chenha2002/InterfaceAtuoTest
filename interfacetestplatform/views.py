@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage
 from django.contrib.auth.decorators import login_required
 from .form import UserForm
 import traceback
-from .models import Project, Model, TestCase
+from .models import Project, Model, TestCase,CaseSuite
 
 # 封装分页函数
 def get_paginator(request,data):
@@ -129,6 +129,13 @@ def module_test_cases(request,module_id):
         module = Model.objects.get(id=int(module_id))
     test_cases = TestCase.objects.filter(belong_module=module).order_by('-id')
     return render(request, 'test_case.html', {'test_cases': get_paginator(request, test_cases)})
+
+# 用例集合展示
+@login_required
+def test_suite(request):
+    case_suites = CaseSuite.objects.filter().order_by('-create_time')
+    return render(request,'case_suite.html',{'case_suites': get_paginator(request, case_suites)})
+
 
 
 # 登出的视图函数：重定向至login视图函数

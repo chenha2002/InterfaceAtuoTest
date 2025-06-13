@@ -58,3 +58,15 @@ class TestCase(models.Model):
     class Meta:
         verbose_name = '测试用例表'
         verbose_name_plural = '测试用例表'
+
+class CaseSuite(models.Model):
+    id = models.AutoField(primary_key=True)
+    suite_desc = models.CharField('用例集合描述',max_length=100,blank=True,null=True)
+    if_execute = models.CharField('是否执行',null=False,default=0,help_text='0:执行，1：不执行')
+    test_case_model =models.CharField('测试执行模式',max_length=100,blank=True,null=True,help_text='data/keyword')
+    creator = models.CharField('创建人',max_length=50,blank=True,null=True)
+    create_time =models.DateTimeField('创建时间',auto_now=True)
+
+    class Meta:
+        verbose_name = '用例集合表'
+        verbose_name_plural = '用例集合表'

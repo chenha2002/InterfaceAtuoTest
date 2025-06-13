@@ -19,3 +19,7 @@ class TestCaseAdmin(admin.ModelAdmin):
         "extract_var", "request_method", "status", "created_time", "updated_time", "user")
 
 admin.site.register(models.TestCase, TestCaseAdmin)
+
+class CaseSuiteAdmin(admin.ModelAdmin):
+    list_display = ("id", "suite_desc", "creator", "create_time")
+admin.site.register(models.CaseSuite, CaseSuiteAdmin)
