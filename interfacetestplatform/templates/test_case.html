@@ -3,13 +3,56 @@
 {% block title %}测试用例{% endblock %}
 
 {% block content %}
+<script type="text/javascript">
+        //页面加载的时候,所有的复选框都是未选中的状态
+        function checkOrCancelAll() {
+            var all_check = document.getElementById("all_check");  //1.获取all的元素对象
+            var all_check = all_check.checked;  //2.获取选中状态
+            //3.若checked=true,将所有的复选框选中；checked=false,将所有的复选框取消
+            var allCheck = document.getElementsByName("test_cases_list");
+            //4.循环遍历取出每一个复选框中的元素
+            if (all_check)//全选
+            {
+                for (var i = 0; i < allCheck.length; i++) {
+                    //设置复选框的选中状态
+                    allCheck[i].checked = true;
+                }
+            } else//取消全选
+            {
+                for (var i = 0; i < allCheck.length; i++) {
+                    allCheck[i].checked = false;
+                }
+            }
+        }
+
+        function ischecked() {
+            //3.若checked=true,将所有的复选框选中,checked=false,将所有的复选框取消
+            var allCheck = document.getElementsByName("test_cases_list");
+            for (var i = 0; i < allCheck.length; i++) {
+                if (allCheck[i].checked == true) {
+                    alert("所需执行的测试用例提交成功！");
+                    return true
+                }
+            }
+            alert("请选择要执行的测试用例！")
+            return false
+        }
+
+</script>
+
 <form action="" method="POST">
     {% csrf_token %}
+    <input style="margin-left: 5px;" type="submit" value='执行测试用例' onclick="return ischecked()"/>
+    <span style="margin-left: 5px;">运行环境：</span>
+    <select name="env">
+        <option selected value="dev">dev</option>
+        <option value="prod">prod</option>
+    </select>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>id</th>
+                <th><input type="checkbox" id="all_check" onclick="checkOrCancelAll();"/>全选</th>
                 <th>用例名称</th>
                 <th>所属项目</th>
                 <th>所属模块</th>
@@ -24,7 +67,7 @@
 
             {% for test_case in test_cases %}
             <tr>
-                 <td>{{ test_case.id }}</td>
+                <td><input type="checkbox" value="{{ test_case.id }}" name="test_cases_list"> {{ test_case.id }}</td>
                 <td><a href="{% url 'test_case_detail' test_case.id%}">{{ test_case.case_name }}</a></td>
                 <td>{{ test_case.belong_project.name }}</td>
                 <td>{{ test_case.belong_module.name }}</td>

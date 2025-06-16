@@ -62,7 +62,7 @@ class TestCase(models.Model):
 class CaseSuite(models.Model):
     id = models.AutoField(primary_key=True)
     suite_desc = models.CharField('用例集合描述',max_length=100,blank=True,null=True)
-    if_execute = models.CharField('是否执行',null=False,default=0,help_text='0:执行，1：不执行')
+    if_execute = models.CharField('是否执行',max_length=100,null=False,default=0,help_text='0:执行，1：不执行')
     test_case_model =models.CharField('测试执行模式',max_length=100,blank=True,null=True,help_text='data/keyword')
     creator = models.CharField('创建人',max_length=50,blank=True,null=True)
     create_time =models.DateTimeField('创建时间',auto_now=True)
@@ -77,3 +77,20 @@ class SuiteCase(models.Model):
     test_case = models.ForeignKey(TestCase,on_delete=models.CASCADE,verbose_name='测试用例')
     status = models.IntegerField('是否有效',null=False,default=1,help_text='0：有效，1：无效')
     create_time = models.DateTimeField('创建时间',auto_now=True)
+
+class InterfaceServer(models.Model):
+    id = models.AutoField(primary_key=True)
+    env = models.CharField('环境', max_length=50, null=False,default='')
+    ip = models.CharField('IP', max_length=50, null=False,default='')
+    port = models.CharField('端口', max_length=50, null=False,default='')
+    remark = models.CharField('备注', max_length=100, null=True)
+    create_time = models.DateTimeField('创建时间', auto_now_add=True)
+    update_time = models.DateTimeField('更新时间', auto_now=True, null=True)
+
+    def __str__(self):
+        return self.env
+
+    class Meta:
+        verbose_name = '接口地址配置表'
+        verbose_name_plural = '接口地址配置表'
+

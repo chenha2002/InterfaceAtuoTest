@@ -23,3 +23,7 @@ admin.site.register(models.TestCase, TestCaseAdmin)
 class CaseSuiteAdmin(admin.ModelAdmin):
     list_display = ("id", "suite_desc", "creator", "create_time")
 admin.site.register(models.CaseSuite, CaseSuiteAdmin)
+
+class InterfaceServerAdmin(admin.ModelAdmin):
+    list_display = ("id", "env", "ip", "port", "remark", "create_time")
+admin.site.register(models.InterfaceServer, InterfaceServerAdmin)
