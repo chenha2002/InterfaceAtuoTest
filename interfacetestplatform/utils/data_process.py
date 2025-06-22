@@ -7,6 +7,22 @@ import redis
 from InterfaceAutoTest.settings import redis_port
 
 
+"""
+断言格式支持：
+示例1：JSON格式关键字匹配
+assert_result(response_obj, '"status_code":200')  # 匹配成功
+
+示例2：嵌套JSON格式匹配
+assert_result(response_obj, '{"body.0.category.name":"Dogs", "status":"available"}')
+
+示例3：混合格式匹配
+assert_result(response_obj, '"status_code":200 && body.id=12345')
+
+示例4：数组包含匹配
+assert_result(response_obj, '{"body":[{"status":"available"}]}')
+
+"""
+
 # 连接redis
 pool = redis.ConnectionPool(host='localhost', port=redis_port, decode_responses=True)
 redis_obj = redis.Redis(connection_pool=pool)
