@@ -5,7 +5,8 @@ from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage
 from django.contrib.auth.decorators import login_required
 from .form import UserForm
 import traceback
-from .models import Project, Model, TestCase,CaseSuite,SuiteCase
+from .models import Project, Model, TestCase,CaseSuite,SuiteCase,InterfaceServer
+from .task import case_task
 
 # 封装分页函数
 def get_paginator(request,data):
@@ -94,6 +95,28 @@ def module(request):
         modules = Model.objects.filter(belong_project__in=projs)
         return render(request,'module.html',{'modules':get_paginator(request, modules),'proj_name':proj_name.strip()})
 
+# 获取测试用例执行的接口地址
+def get_server_address(env):
+    if env:  # 环境处理
+        env_data = InterfaceServer.objects.filter(env=env[0])
+        print("env_data: {}".format(env_data))
+        if env_data:
+            ip = env_data[0].ip
+            port_int = env_data[0].port
+            try:
+                port = int(port_int)
+            except (ValueError, TypeError):
+                port = ''
+            print("ip: {}, port: {}".format(ip, port))
+            server_address = "{}".format(ip)
+            if port:
+                server_address += ":{}".format(port)
+            print("server_address: {}".format(server_address))
+            return server_address
+        else:
+            return ""
+    else:
+        return ""
 
 # 测试用例菜单
 @login_required
@@ -102,16 +125,25 @@ def test_case(request):
     test_cases = ""
     if request.method == "GET":
         test_cases = TestCase.objects.filter().order_by('id')
-        print("testcases in testcase: {}".format(test_cases))
+        print("testcases: {}".format(test_cases))
     elif request.method == "POST":
         print("request.POST: {}".format(request.POST))
-        test_case_id_list = request.POST.getlist('testcases_list')
+        test_case_id_list = request.POST.getlist('test_cases_list')
+        env = request.POST.getlist('env')
+        print("env: {}".format(env))
+        server_address = get_server_address(env)
+        if not server_address:
+            return HttpResponse("提交的运行环境为空，请选择环境后再提交！")
         if test_case_id_list:
             test_case_id_list.sort()
             print("test_case_id_list: {}".format(test_case_id_list))
+            print("获取到用例，开始用例执行")
+            case_task(test_case_id_list, server_address)
+        else:
+            print("运行测试用例失败")
+            return HttpResponse("提交的运行测试用例为空，请选择用例后在提交！")
         test_cases = TestCase.objects.filter().order_by('id')
     return render(request, 'test_case.html', {'test_cases': get_paginator(request, test_cases)})
-
 # 用例详情
 @login_required
 def test_case_detail(request,test_case_id):

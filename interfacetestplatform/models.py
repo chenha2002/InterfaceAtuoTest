@@ -94,3 +94,20 @@ class InterfaceServer(models.Model):
         verbose_name = '接口地址配置表'
         verbose_name_plural = '接口地址配置表'
 
+# 接口服务器配置
+class InterfaceServer(models.Model):
+    id = models.AutoField(primary_key=True)
+    env = models.CharField('环境', max_length=50, null=False, default='')
+    ip = models.CharField('ip', max_length=50, null=False, default='')
+    port = models.CharField('端口', max_length=100, null=True, default='')
+    remark = models.CharField('备注', max_length=100, null=True)
+    create_time = models.DateTimeField('创建时间', auto_now_add=True)
+    update_time = models.DateTimeField('更新时间', auto_now=True, null=True)
+
+    def __str__(self):
+        return self.env
+
+    class Meta:
+        verbose_name = '接口地址配置表'
+        verbose_name_plural = '接口地址配置表'
+
