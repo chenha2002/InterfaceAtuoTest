@@ -27,8 +27,8 @@ def request_process(url, request_method, request_content):
         try:
             if isinstance(request_content, dict):
                 print("接口地址：%s" % url)
-                print("请求数据：%s" % json.dumps(request_content))
-                r = requests.post(url, data=json.dumps(request_content))
+                print("请求数据：%s" % request_content)
+                r = requests.post(url, data=request_content)
             else:
                 raise ValueError
         except ValueError as e:
@@ -43,7 +43,7 @@ def request_process(url, request_method, request_content):
             if isinstance(request_content, dict):
                 print("接口地址：%s" % url)
                 print("请求数据：%s" % json.dumps(request_content))
-                r = requests.put(url,  data=json.dumps(request_content))
+                r = requests.put(url,  data=request_content)
             else:
                 raise ValueError
         except ValueError as e:
