@@ -34,7 +34,9 @@
     <open-files>
       <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_testcase" />
       <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_suitecase" />
+      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="consoles/Connection" />
       <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_model" />
+      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_testcaseexecuteresult" />
       <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_casesuite" />
     </open-files>
   </component>
@@ -45,6 +47,7 @@
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_casesuite" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_model" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_suitecase" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_testcaseexecuteresult" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_testcase" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">

@@ -111,3 +111,26 @@ class InterfaceServer(models.Model):
         verbose_name = '接口地址配置表'
         verbose_name_plural = '接口地址配置表'
 
+class TestCaseExecuteResult(models.Model):
+    id = models.AutoField(primary_key=True)
+    belong_test_case = GroupedForeignKey(TestCase, "belong_test_case", on_delete=models.CASCADE, verbose_name='所属用例')
+    status = models.IntegerField(null=True, help_text="0：表示未执行，1：表示已执行")
+    exception_info = models.CharField(max_length=2048, blank=True, null=True)
+    request_data = models.CharField('请求体', max_length=1024, null=True)  # {"code": "00", "userid": 22889}
+    response_data = models.CharField('响应字符串', max_length=1024, null=True)  # {"code": "00", "userid": 22889}
+    execute_result = models.CharField('执行结果', max_length=1024, null=True)  # 成功/失败
+    extract_var = models.CharField('关联参数', max_length=1024, null=True)  # 响应成功后提取变量
+    last_time_response_data = models.CharField('上一次响应字符串', max_length=1024, null=True)  # {"code": "00", "userid": 22889}
+    execute_total_time = models.CharField('执行耗时', max_length=1024, null=True)
+    execute_start_time = models.CharField('执行开始时间', max_length=300, blank=True, null=True)
+    execute_end_time = models.CharField('执行结束时间', max_length=300, blank=True, null=True)
+    created_time = models.DateTimeField('创建时间', auto_now_add=True)
+    updated_time = models.DateTimeField('更新时间', auto_now=True, null=True)
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name = '用例执行结果记录表'
+        verbose_name_plural = '用例执行结果记录表'
+

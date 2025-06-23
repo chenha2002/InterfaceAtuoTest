@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage
 from django.contrib.auth.decorators import login_required
 from .form import UserForm
 import traceback
-from .models import Project, Model, TestCase,CaseSuite,SuiteCase,InterfaceServer,User
+from .models import Project, Model, TestCase,CaseSuite,SuiteCase,InterfaceServer,User,TestCaseExecuteResult
 from .task import case_task
 
 # 封装分页函数
@@ -268,7 +268,12 @@ def show_and_delete_case_in_suite(request,suite_id):
     return render(request,'show_and_delete_case_in_suite.html',{'test_cases': get_paginator(request, test_cases),'case_suite':case_suite})
 
 
-
+# 测试结果的展示
+@login_required
+def test_case_execute_record(request):
+    test_case_execute_records = TestCaseExecuteResult.objects.filter().order_by('-id')
+    return render(request, 'test_case_execute_records.html',
+                {'test_case_execute_records': get_paginator(request, test_case_execute_records)})
 
 
 

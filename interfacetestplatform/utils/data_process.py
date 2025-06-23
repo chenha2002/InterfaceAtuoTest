@@ -104,10 +104,11 @@ def data_postprocess(global_key, response_data, extract_var):
     if re.search(regx_exp, response_data):
         global_vars = json.loads(os.environ[global_key])
         print("关联前的全局变量：{}".format(global_vars))
-        global_vars[var_name] = re.search(regx_exp, response_data).group(1)
+        var_value = re.search(regx_exp, response_data).group(1)
+        global_vars[var_name] = var_value
         os.environ[global_key] = json.dumps(global_vars)
         print("关联前的全局变量：{}".format(os.environ[global_key]))
-    return
+    return var_name+"："+var_value
 
 
 import json
