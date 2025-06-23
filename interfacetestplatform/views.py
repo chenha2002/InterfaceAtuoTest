@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage
 from django.contrib.auth.decorators import login_required
 from .form import UserForm
 import traceback
-from .models import Project, Model, TestCase,CaseSuite,SuiteCase,InterfaceServer
+from .models import Project, Model, TestCase,CaseSuite,SuiteCase,InterfaceServer,User
 from .task import case_task
 
 # 封装分页函数
@@ -63,8 +63,6 @@ def login(request):
                     session_id = request.session.items()  # 打印session信息
                     print(session_id)
                     return redirect('/')
-
-
 
                 else:
                     message = "用户名不存在或者密码不正确！"
@@ -144,6 +142,62 @@ def test_case(request):
             return HttpResponse("提交的运行测试用例为空，请选择用例后在提交！")
         test_cases = TestCase.objects.filter().order_by('id')
     return render(request, 'test_case.html', {'test_cases': get_paginator(request, test_cases)})
+
+# 用例修改方法
+@login_required
+def edit_test_case(request, case_id):
+    try:
+        test_case = TestCase.objects.get(id=case_id)
+    except TestCase.DoesNotExist:
+        return HttpResponse("测试用例不存在")
+
+    if request.method == "GET":
+        return render(request, 'edit_test_case.html', {'test_case': test_case})
+
+    elif request.method == "POST":
+        form_data = request.POST
+        fields_mapping = {
+            "case_name": "case_name",
+            "belong_project": "belong_project",  # 这是外键字段，需要特殊处理
+            "belong_module": "belong_module",  # 这是外键字段，需要特殊处理
+            "request_data": "request_data",
+            "uri": "uri",
+            "assert_key": "assert_key",
+            "maintainer": "maintainer",
+            "extract_var": "extract_var",
+            "request_method": "request_method",
+            "user": "user"
+        }
+
+        # 处理普通字段
+        for model_field, form_field in fields_mapping.items():
+            if model_field not in ["belong_project", "belong_module", "user"]:
+                setattr(test_case, model_field, form_data.get(form_field))
+
+        # 特殊处理外键字段
+        try:
+            # 尝试根据项目名称查找Project实例
+            project_name = form_data.get("belong_project")
+            if project_name:
+                test_case.belong_project = Project.objects.get(name=project_name)
+
+            # 尝试根据模块名称查找Module实例
+            module_name = form_data.get("belong_module")
+            if module_name:
+                test_case.belong_module = Model.objects.get(name=module_name)
+
+            # 处理用户字段
+            user_id = form_data.get("user")
+            if user_id:
+                test_case.user = User.objects.get(id=user_id)
+
+        except (Project.DoesNotExist, Model.DoesNotExist, User.DoesNotExist) as e:
+            return HttpResponse(f"关联对象不存在: {str(e)}")
+
+        test_case.save()
+        return redirect('test_case')
+
+
 # 用例详情
 @login_required
 def test_case_detail(request,test_case_id):

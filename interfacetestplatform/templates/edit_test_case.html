@@ -1,0 +1,159 @@
+{% extends 'base.html' %}  <!-- 若有基础模板可继承，若无则删除此行 -->
+
+{% block title %}编辑测试用例{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">编辑测试用例</h1>
+    <hr>
+
+    {% if error_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ error_message }}
+    </div>
+    {% endif %}
+
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+
+        <!-- 基础信息区域 -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="case_name" class="form-label">用例名称 <span class="text-danger">*</span></label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="case_name"
+                    name="case_name"
+                    value="{{ test_case.case_name }}"
+                    required
+                >
+            </div>
+            <div class="col-md-6">
+                <label for="belong_project" class="form-label">所属项目 <span class="text-danger">*</span></label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="belong_project"
+                    name="belong_project"
+                    value="{{ test_case.belong_project }}"
+                    required
+                >
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="belong_module" class="form-label">所属模块 <span class="text-danger">*</span></label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="belong_module"
+                    name="belong_module"
+                    value="{{ test_case.belong_module }}"
+                    required
+                >
+            </div>
+            <div class="col-md-6">
+                <label for="maintainer" class="form-label">维护人 <span class="text-danger">*</span></label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="maintainer"
+                    name="maintainer"
+                    value="{{ test_case.maintainer }}"
+                    required
+                >
+            </div>
+        </div>
+
+        <!-- 请求信息区域 -->
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">请求配置</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="uri" class="form-label">请求URI <span class="text-danger">*</span></label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="uri"
+                            name="uri"
+                            value="{{ test_case.uri }}"
+                            required
+                        >
+                    </div>
+                    <div class="col-md-6">
+                        <label for="request_method" class="form-label">请求方法 <span class="text-danger">*</span></label>
+                        <select
+                            class="form-control"
+                            id="request_method"
+                            name="request_method"
+                            required
+                        >
+                            <option value="GET" {% if test_case.request_method == 'GET' %}selected{% endif %}>GET</option>
+                            <option value="POST" {% if test_case.request_method == 'POST' %}selected{% endif %}>POST</option>
+                            <option value="PUT" {% if test_case.request_method == 'PUT' %}selected{% endif %}>PUT</option>
+                            <option value="DELETE" {% if test_case.request_method == 'DELETE' %}selected{% endif %}>DELETE</option>
+                            <option value="PATCH" {% if test_case.request_method == 'PATCH' %}selected{% endif %}>PATCH</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="request_data" class="form-label">请求数据</label>
+                    <textarea
+                        class="form-control"
+                        id="request_data"
+                        name="request_data"
+                        rows="4"
+                    >{{ test_case.request_data }}</textarea>
+                    <div class="form-text text-muted">支持JSON/FormData格式，JSON需确保格式正确</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="extract_var" class="form-label">提取变量</label>
+                    <textarea
+                        class="form-control"
+                        id="extract_var"
+                        name="extract_var"
+                        rows="3"
+                    >{{ test_case.extract_var }}</textarea>
+                    <div class="form-text text-muted">格式示例: {"token": "body.data.token"}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 断言配置区域 -->
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">断言配置</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="assert_key" class="form-label">断言关键字 <span class="text-danger">*</span></label>
+                    <textarea
+                        class="form-control"
+                        id="assert_key"
+                        name="assert_key"
+                        rows="3"
+                        required
+                    >{{ test_case.assert_key }}</textarea>
+                    <div class="form-text text-muted">格式示例: {"status_code": 200, "body.message": "操作成功"}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户信息区域（隐藏字段） -->
+        <input type="hidden" name="user" value="{{ test_case.user.id }}">
+
+        <!-- 提交按钮 -->
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="{% url 'test_case' %}" class="btn btn-secondary me-md-2">取消</a>
+            <button type="submit" class="btn btn-primary">保存修改</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
