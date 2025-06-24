@@ -4,6 +4,7 @@ from django.contrib import auth  # Django用户认证（Auth）组件一般用�
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage
 from django.contrib.auth.decorators import login_required
 from .form import UserForm
+import json
 import traceback
 from .models import Project, Model, TestCase,CaseSuite,SuiteCase,InterfaceServer,User,TestCaseExecuteResult
 from .task import case_task
@@ -276,6 +277,22 @@ def test_case_execute_record(request):
                 {'test_case_execute_records': get_paginator(request, test_case_execute_records)})
 
 
+# 用例执行结果—对比差异
+@login_required
+def case_result_diff(request,test_record_id):
+    test_record_data = TestCaseExecuteResult.objects.get(id=test_record_id)
+    print("用例执行结果记录: {}".format(test_record_data))
+    present_response = test_record_data.response_data
+    if present_response:
+        present_response = json.dumps(json.loads(present_response), sort_keys=True, indent=4,
+                                      ensure_ascii=False)  # 中文字符不转ascii编码
+        print("当前响应结果: {}".format(present_response))
+    last_time_execute_response = test_record_data.last_time_response_data
+    if last_time_execute_response:
+        last_time_execute_response = json.dumps(json.loads(last_time_execute_response), sort_keys=True, indent=4,
+                                                ensure_ascii=False)
+    print("上一次响应结果: {}".format(last_time_execute_response))
+    return render(request, 'case_result_diff.html', locals())
 
 
 
