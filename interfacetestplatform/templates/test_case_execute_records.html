@@ -28,11 +28,11 @@
             <td><a href="{% url 'test_case_detail' testrecord.belong_test_case.id%}" target="_blank">{{ testrecord.belong_test_case.case_name }}</a></td>
             <td>{{ testrecord.request_data }}</td>
             <td>{{ testrecord.response_data }}</td>
-            <td><a href="" target="_blank">对比差异</a></td>
+            <td><a href="{% url 'case_result_diff' testrecord.id %}" target="_blank">对比差异</a></td>
             <td>{{ testrecord.belong_test_case.assert_key }}</td>
             <td>{{ testrecord.execute_result|default_if_none:"" }}</td>
             {% if testrecord.exception_info %}
-            <td><a href="{% url 'case_result_diff' testrecord.id %}" target="_blank">对比差异</a></td>
+            <td><a href="" target="_blank">显示异常信息</a></td>
             {% else %}
             <td>无</td>
             {% endif %}
