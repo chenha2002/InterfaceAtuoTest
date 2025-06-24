@@ -1,13 +1,6 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect,HttpResponse
-from django.contrib import auth  # Django用户认证（Auth）组件一般用在用户的登录注册上，用于判断当前的用户是否合法
 from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage
 from django.contrib.auth.decorators import login_required
-from .form import UserForm
-import json
-import traceback
-from .models import Project, Model, TestCase,CaseSuite,SuiteCase,InterfaceServer,User,TestCaseExecuteResult
-from .task import case_task
 
 # 封装分页函数
 def get_paginator(request,data):
@@ -25,7 +18,6 @@ def get_paginator(request,data):
         # 其他异常
         return redirect('/')
     return paginator_pages
-
 
 # Create your server here.
 # 默认页的视图函数
