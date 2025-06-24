@@ -294,7 +294,13 @@ def case_result_diff(request,test_record_id):
     print("上一次响应结果: {}".format(last_time_execute_response))
     return render(request, 'case_result_diff.html', locals())
 
-
+# 用例执行结果—显示异常信息
+@login_required
+def error_show(request,test_record_id):
+    test_record_data = TestCaseExecuteResult.objects.get(id=test_record_id)
+    print("用例执行结果记录: {}".format(test_record_data))
+    errors = test_record_data.exception_info
+    return render(request,'error_show.html',{'errors': errors})
 
 
 # 登出的视图函数：重定向至login视图函数
