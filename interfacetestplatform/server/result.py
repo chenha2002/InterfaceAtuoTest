@@ -1,6 +1,10 @@
 import json
+
+from django.http import JsonResponse
 from django.shortcuts import render, redirect,HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+
 from ..views import get_paginator
 from ..models import Project, TestCaseExecuteResult
 
@@ -36,3 +40,12 @@ def error_show(request,test_record_id):
     print("用例执行结果记录: {}".format(test_record_data))
     errors = test_record_data.exception_info
     return render(request,'error_show.html',{'errors': errors})
+
+# @login_required
+# @csrf_protect
+# def delete_case_result_diff(request, test_record_id):
+#     if request.method == 'POST':
+#         test_record_data = TestCaseExecuteResult.objects.get(id=test_record_id)
+#         test_record_data.delete()
+#         return JsonResponse({'status': 'success'})
+#     return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)

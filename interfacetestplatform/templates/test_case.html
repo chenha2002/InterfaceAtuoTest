@@ -39,6 +39,18 @@
         }
 
 </script>
+<style>
+    .request-data-container {
+        max-width: 200px;  /* 限制最大宽度 */
+        max-height: 100px; /* 限制最大高度 */
+        overflow-y: auto;  /* 超出高度时显示垂直滚动条 */
+        word-break: break-all; /* 长单词自动换行 */
+    }
+
+    .request-data-content {
+        padding: 4px; /* 内边距 */
+    }
+</style>
 
 <form action="" method="POST">
     {% csrf_token %}
@@ -58,6 +70,7 @@
                 <th>所属模块</th>
                 <th>接口地址</th>
                 <th>请求方式</th>
+                <th>请求头</th>
                 <th>请求数据</th>
                 <th>断言key</th>
                 <th>提取变量表达式</th>
@@ -76,7 +89,20 @@
                 <td>{{ test_case.belong_module.name }}</td>
                 <td>{{ test_case.uri }}</td>
                 <td>{{ test_case.request_method }}</td>
-                <td>{{ test_case.request_data }}</td>
+                <td>
+                    <div class="request-data-container">
+                        <div class="request-data-content">
+                            {{ test_case.requests_header }}
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="request-data-container">
+                        <div class="request-data-content">
+                            {{ test_case.request_data }}
+                        </div>
+                    </div>
+                </td>
                 <td>{{ test_case.assert_key }}</td>
                 <td>{{ test_case.extract_var }}</td>
                 <td>

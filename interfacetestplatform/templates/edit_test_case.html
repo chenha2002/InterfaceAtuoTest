@@ -101,7 +101,16 @@
                         </select>
                     </div>
                 </div>
-
+                <div class="mb-3">
+                    <label for="requests_header" class="form-label">请求头</label>
+                    <textarea
+                        class="form-control"
+                        id="requests_header"
+                        name="requests_header"
+                        rows="4"
+                    >{{ test_case.requests_header }}</textarea>
+                    <div class="form-text text-muted">支持JSON/FormData格式，JSON需确保格式正确</div>
+                </div>
                 <div class="mb-3">
                     <label for="request_data" class="form-label">请求数据</label>
                     <textarea

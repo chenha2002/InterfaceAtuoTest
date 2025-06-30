@@ -84,6 +84,7 @@ def edit_test_case(request, case_id):
             "maintainer": "maintainer",
             "extract_var": "extract_var",
             "request_method": "request_method",
+            "requests_header": "requests_header",
             "user": "user"
         }
 

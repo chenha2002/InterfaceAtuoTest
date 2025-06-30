@@ -15,7 +15,7 @@ admin.site.register(models.Model, ModelAdmin)
 
 class TestCaseAdmin(admin.ModelAdmin):
     list_display = (
-        "id", "case_name", "belong_project", "belong_module", "request_data", "uri", "assert_key", "maintainer",
+        "id", "case_name", "belong_project", "belong_module","requests_header", "request_data", "uri", "assert_key", "maintainer",
         "extract_var", "request_method", "status", "created_time", "updated_time", "user")
 
 admin.site.register(models.TestCase, TestCaseAdmin)

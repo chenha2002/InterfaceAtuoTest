@@ -1,10 +1,11 @@
 import re
 import hashlib
 import os
-import json
-import traceback
 import redis
 from InterfaceAutoTest.settings import redis_port
+import json
+import traceback
+from typing import Tuple, Dict, Any, List
 
 
 """
@@ -21,6 +22,15 @@ assert_result(response_obj, '"status_code":200 && body.id=12345')
 示例4：数组包含匹配
 assert_result(response_obj, '{"body":[{"status":"available"}]}')
 
+
+
+提取格式支持
+变量名||正则表达式
+extract_var = "token||<token>(.*?)</token>"
+
+变量名$$JSON路径
+extract_var = "userId$$user.id"  # 从 {"user": {"id": 123}} 中提取123
+extract_var = "firstItem$$items[0].name"  # 从数组中提取第一个元素的name字段
 """
 
 # 连接redis
@@ -58,66 +68,241 @@ def md5(s):
 
 # 请求数据预处理：参数化、函数化
 # 将请求数据中包含的${变量名}的字符串部分，替换为唯一数或者全局变量字典中对应的全局变量
-def data_preprocess(global_key, requestData):
+import re
+import json
+import os
+import traceback
+
+
+def data_preprocess(global_key, request_data, request_headers):
+    """
+    预处理请求数据和请求头，支持参数化和函数化处理
+
+    Args:
+        global_key: 全局变量在环境变量中的键名
+        request_data: 请求体数据（字符串或字典）
+        request_headers: 请求头数据（字典）
+
+    Returns:
+        (error_code, processed_data, error_message, processed_headers)
+    """
     try:
-        # 匹配注册用户名参数，即"${unique_num...}"的格式，并取出本次请求的随机数供后续接口的用户名参数使用
-        if re.search(r"\$\{unique_num\d+\}", requestData):
-            var_name = re.search(r"\$\{(unique_num\d+)\}", requestData).group(1)  # 获取用户名参数
+        # 初始化请求头处理结果
+        processed_headers = request_headers if request_headers else {}
+
+        # ===== 处理请求体数据 =====
+        # 转换为字符串以便正则匹配（如果是字典则转为JSON字符串）
+        if isinstance(request_data, dict):
+            data_str = json.dumps(request_data)
+        else:
+            data_str = str(request_data)
+
+        # 匹配注册用户名参数
+        if re.search(r"\$\{unique_num\d+\}", data_str):
+            var_name = re.search(r"\$\{(unique_num\d+)\}", data_str).group(1)
             print("用户名变量:%s" % var_name)
             var_value = get_unique_number_value(var_name)
             print("用户名变量值: %s" % var_value)
-            requestData = re.sub(r"\$\{unique_num\d+\}", str(var_value), requestData)
+            data_str = re.sub(r"\$\{unique_num\d+\}", str(var_value), data_str)
             var_name = var_name.split("_")[1]
             print("关联的用户名变量: %s" % var_name)
-            # "xxxkey" : "{'var_name': var_value}"
             global_var = json.loads(os.environ[global_key])
             global_var[var_name] = var_value
             os.environ[global_key] = json.dumps(global_var)
             print("用户名唯一数参数化后的全局变量【os.environ[global_key]】: {}".format(os.environ[global_key]))
-        # 函数化，如密码加密"${md5(...)}"的格式
-        if re.search(r"\$\{\w+\(.+\)\}", requestData):
-            var_pass = re.search(r"\$\{(\w+\(.+\))\}", requestData).group(1)  # 获取密码参数
+
+        # 处理函数化参数（如密码加密）
+        if re.search(r"\$\{\w+\(.+\)\}", data_str):
+            var_pass = re.search(r"\$\{(\w+\(.+\))\}", data_str).group(1)
             print("需要函数化的变量: %s" % var_pass)
-            print("函数化后的结果: %s" % eval(var_pass))
-            requestData = re.sub(r"\$\{\w+\(.+\)\}", eval(var_pass), requestData)  # 将requestBody里面的参数内容通过eval修改为实际变量值
-            print("函数化后的请求数据: %s" % requestData)  # requestBody是拿到的请求时发送的数据
-        # 其余变量参数化
-        if re.search(r"\$\{(\w+)\}", requestData):
-            print("需要参数化的变量: %s" % (re.findall(r"\$\{(\w+)\}", requestData)))
-            for var_name in re.findall(r"\$\{(\w+)\}", requestData):
-                requestData = re.sub(r"\$\{%s\}" % var_name, str(json.loads(os.environ[global_key])[var_name]), requestData)
-        print("变量参数化后的最终请求数据: %s" % requestData)
+            func_result = eval(var_pass)
+            print("函数化后的结果: %s" % func_result)
+            data_str = re.sub(r"\$\{\w+\(.+\)\}", str(func_result), data_str)
+            print("函数化后的请求数据: %s" % data_str)
+
+        # 处理其余变量参数化
+        if re.search(r"\$\{(\w+)\}", data_str):
+            var_names = re.findall(r"\$\{(\w+)\}", data_str)
+            print("需要参数化的变量: %s" % var_names)
+            global_var = json.loads(os.environ[global_key])
+            for var_name in var_names:
+                if var_name in global_var:
+                    data_str = re.sub(r"\$\{%s\}" % var_name, str(global_var[var_name]), data_str)
+                else:
+                    print(f"警告：全局变量中未找到 {var_name}")
+
+        print("变量参数化后的最终请求数据: %s" % data_str)
         print("数据参数后的最终全局变量【os.environ[global_key]】: {}".format(os.environ[global_key]))
-        return 0, requestData, ""
+
+        # 转换回原始类型（如果是字典则解析为字典）
+        if isinstance(request_data, dict):
+            processed_data = json.loads(data_str)
+        else:
+            processed_data = data_str
+
+        # ===== 处理请求头数据 =====
+        if processed_headers:
+            print("开始处理请求头参数化...")
+            # 确保processed_headers是字典类型
+            if isinstance(processed_headers, str):
+                try:
+                    processed_headers = json.loads(processed_headers)
+                except json.JSONDecodeError:
+                    print(f"错误：无法将请求头解析为字典。原始值：{processed_headers}")
+                    processed_headers = {}  # 解析失败时置为空字典
+
+            for header_name, header_value in processed_headers.items():
+                if not isinstance(header_value, str):
+                    header_value = str(header_value)
+
+                # 处理用户名参数
+                if re.search(r"\$\{unique_num\d+\}", header_value):
+                    var_name = re.search(r"\$\{(unique_num\d+)\}", header_value).group(1)
+                    print(f"请求头中发现用户名变量: {var_name}")
+                    var_value = get_unique_number_value(var_name)
+                    header_value = re.sub(r"\$\{unique_num\d+\}", str(var_value), header_value)
+                    var_name = var_name.split("_")[1]
+                    global_var = json.loads(os.environ[global_key])
+                    global_var[var_name] = var_value
+                    os.environ[global_key] = json.dumps(global_var)
+                    print(f"请求头用户名参数化后: {header_value}")
+
+                # 处理函数化参数
+                if re.search(r"\$\{\w+\(.+\)\}", header_value):
+                    var_func = re.search(r"\$\{(\w+\(.+\))\}", header_value).group(1)
+                    print(f"请求头中需要函数化的变量: {var_func}")
+                    func_result = eval(var_func)
+                    header_value = re.sub(r"\$\{\w+\(.+\)\}", str(func_result), header_value)
+                    print(f"请求头函数化后的结果: {header_value}")
+
+                # 处理其余变量参数化
+                if re.search(r"\$\{(\w+)\}", header_value):
+                    var_names = re.findall(r"\$\{(\w+)\}", header_value)
+                    print(f"请求头中需要参数化的变量: {var_names}")
+                    global_var = json.loads(os.environ[global_key])
+                    for var_name in var_names:
+                        if var_name in global_var:
+                            header_value = re.sub(r"\$\{%s\}" % var_name, str(global_var[var_name]), header_value)
+                        else:
+                            print(f"警告：请求头变量 {var_name} 未在全局变量中找到")
+
+                # 更新处理后的请求头值
+                processed_headers[header_name] = header_value
+
+            print("请求头参数化后的结果: %s" % processed_headers)
+
+        return 0, processed_data, "", processed_headers  # 修改返回值顺序
+
     except Exception as e:
         print("请求数据预处理发生异常，error：{}".format(traceback.format_exc()))
-        return 1, {}, traceback.format_exc()
+        return 1, {}, traceback.format_exc(), {}  # 修改返回值顺序
 
 
 # 响应数据提取关联参数
 def data_postprocess(global_key, response_data, extract_var):
-    print("需提取的关联变量：%s" % extract_var)
-    var_name = extract_var.split("||")[0]
-    print("关联变量名：%s" % var_name)
-    regx_exp = extract_var.split("||")[1]
-    print("关联变量正则：%s" % regx_exp)
-    if re.search(regx_exp, response_data):
-        global_vars = json.loads(os.environ[global_key])
-        print("关联前的全局变量：{}".format(global_vars))
-        var_value = re.search(regx_exp, response_data).group(1)
-        global_vars[var_name] = var_value
+    try:
+        # 确保全局变量环境变量存在
+        if global_key not in os.environ:
+            os.environ[global_key] = json.dumps({})
+
+        print(f"需提取的关联变量：{extract_var}")
+
+        # 判断提取方式
+        if "$$" in extract_var:  # JSON提取方式
+            var_name, json_path = extract_var.split("$$", 1)
+            print(f"关联变量名：{var_name}")
+            print(f"JSON路径：{json_path}")
+
+            # 尝试解析响应数据为JSON
+            try:
+                json_data = json.loads(response_data)
+            except json.JSONDecodeError:
+                print(f"警告: 响应数据不是有效的JSON格式，无法使用JSON提取")
+                return f"{var_name}：提取失败（非JSON响应）"
+
+            # 使用JSONPath提取值
+            value = extract_json_value(json_data, json_path)
+            if value is not None:
+                # 将提取的变量保存到全局变量
+                save_to_global_vars(global_key, var_name, value)
+                print(f"成功从JSON中提取变量 {var_name} = {value}")
+                return f"{var_name}：{value}"
+            else:
+                print(f"警告: JSON路径 {json_path} 在响应中未找到匹配值")
+                return f"{var_name}：未找到匹配值"
+
+        elif "||" in extract_var:  # 正则表达式方式（原有逻辑）
+            var_name, regx_exp = extract_var.split("||", 1)
+            print(f"关联变量名：{var_name}")
+            print(f"关联变量正则：{regx_exp}")
+
+            if re.search(regx_exp, response_data):
+                var_value = re.search(regx_exp, response_data).group(1)
+                # 将提取的变量保存到全局变量
+                save_to_global_vars(global_key, var_name, var_value)
+                print(f"成功从正则表达式提取变量 {var_name} = {var_value}")
+                return f"{var_name}：{var_value}"
+            else:
+                print(f"警告: 正则表达式 {regx_exp} 在响应中未匹配到任何内容")
+                return f"{var_name}：未找到匹配值"
+
+        else:
+            raise ValueError(f"提取变量格式错误: {extract_var}，应使用'变量名||正则表达式'或'变量名$$json路径'格式")
+
+    except Exception as e:
+        print(f"提取变量时发生异常: {str(e)}")
+        return f"提取失败: {str(e)}"
+
+
+# 辅助函数：根据JSONPath提取值
+def extract_json_value(data, path):
+    """
+    根据JSONPath提取JSON中的值
+
+    支持的路径格式示例:
+    - root-level: "key"
+    - nested: "key1.key2"
+    - array: "key1[0].key2"
+    """
+    try:
+        parts = path.split('.')
+        current = data
+
+        for part in parts:
+            # 处理数组索引
+            if '[' in part and ']' in part:
+                key, index = part.split('[')
+                index = int(index.replace(']', ''))
+                if key:
+                    current = current[key]
+                current = current[index]
+            else:
+                current = current[part]
+
+        return current
+    except (KeyError, IndexError, TypeError) as e:
+        print(f"JSONPath解析错误: {path}, 错误: {str(e)}")
+        return None
+
+
+# 辅助函数：安全地将变量保存到全局环境变量
+def save_to_global_vars(global_key, var_name, value):
+    """将变量安全地保存到全局环境变量"""
+    try:
+        # 从环境变量加载当前全局变量
+        global_vars = json.loads(os.environ.get(global_key, '{}'))
+
+        # 保存新变量
+        global_vars[var_name] = value
+
+        # 更新环境变量
         os.environ[global_key] = json.dumps(global_vars)
-        print("关联前的全局变量：{}".format(os.environ[global_key]))
-    return var_name+"："+var_value
+
+        print(f"已将变量保存到全局环境: {var_name} = {value}")
+    except Exception as e:
+        print(f"保存全局变量失败: {str(e)}")
 
 
-import json
-import traceback
-from typing import Tuple, Dict, Any, List
-
-import json
-import traceback
-from typing import Tuple, Dict, Any, List
 
 
 def assert_result(response_obj, key_word: str) -> Tuple[bool, str]:

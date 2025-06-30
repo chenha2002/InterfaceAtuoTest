@@ -14,6 +14,9 @@
       <assistant-state connection-id="0dbd5200-acb4-404d-be71-1a7574967340" default-profile-name="" selected-profile-name="" selected-model-name="" assistant-type="GENERIC" selected-action="SHOW_SQL" availability="UNAVAILABLE" acknowledgement="NONE">
         <messages />
       </assistant-state>
+      <assistant-state connection-id="e8d3a5bf-6389-45c9-bd22-9471923cedee" default-profile-name="" selected-profile-name="" selected-model-name="" assistant-type="GENERIC" selected-action="SHOW_SQL" availability="UNAVAILABLE" acknowledgement="NONE">
+        <messages />
+      </assistant-state>
     </assistants>
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -34,9 +37,7 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_testcaseexecuteresult" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="0dbd5200-acb4-404d-be71-1a7574967340" />
@@ -52,6 +53,7 @@
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_testcaseexecuteresult" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_testcase" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.django_admin_log" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="e8d3a5bf-6389-45c9-bd22-9471923cedee" dataset="main.interfacetestplatform_testcaseexecuteresult" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
@@ -170,7 +172,7 @@
           <description value="" />
           <database-type value="SQLITE" />
           <config-type value="BASIC" />
-          <database-version value="9999.0" />
+          <database-version value="3.49" />
           <driver-source value="BUNDLED" />
           <driver-library value="" />
           <driver value="" />

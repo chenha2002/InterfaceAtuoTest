@@ -35,6 +35,7 @@ def case_task(test_case_id_list, server_address):
         execute_record.execute_start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(execute_start_time))
 
         request_data = test_case.request_data
+        request_header = test_case.requests_header
         extract_var = test_case.extract_var
         assert_key = test_case.assert_key
         interface_name = test_case.uri
@@ -52,7 +53,9 @@ def case_task(test_case_id_list, server_address):
         print("请求方法: {}".format(request_method))
         url = "{}{}".format(server_address, interface_name)
         print("接口地址: {}".format(url))
-        code, request_data, error_msg = data_preprocess(global_key, str(request_data))
+        code, processed_data, error_msg, processed_headers  = data_preprocess(global_key, str(request_data), request_header)
+        request_data = processed_data
+        request_header = processed_headers
         # 请求数据预处理异常，结束用例执行
         if code != 0:
             print("数据处理异常，error: {}".format(error_msg))
@@ -69,7 +72,7 @@ def case_task(test_case_id_list, server_address):
             execute_record.request_data = request_data
         # 调用接口
         try:
-            res_data = request_process(url, request_method, json.loads(request_data))
+            res_data = request_process(url, request_method, json.loads(request_data),request_header)
             print("响应数据: {}".format(json.dumps(res_data.json(), ensure_ascii=False)))  # ensure_ascii：兼容中文
             result_flag, exception_info = assert_result(res_data, assert_key)
             # 结果记录保存

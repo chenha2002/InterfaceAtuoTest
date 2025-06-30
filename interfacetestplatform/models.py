@@ -41,6 +41,7 @@ class TestCase(models.Model):
     case_name = models.CharField('用例名称', max_length=50, null=False)
     belong_project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='所属项目')
     belong_module =GroupedForeignKey(Model, group_field="belong_project", on_delete=models.CASCADE, verbose_name='所属模块')
+    requests_header = models.TextField('请求头', null=True)
     request_data = models.TextField('请求数据', null=True)
     uri = models.CharField('接口地址', max_length=1024, null=False, default='')
     assert_key = models.CharField('断言内容', max_length=1024, null=True)

@@ -2,7 +2,18 @@
 {% load static %}
 {% block title %}用例执行记录{% endblock %}
 {% block content %}
+<style>
+    .request-data-container {
+        max-width: 200px;  /* 限制最大宽度 */
+        max-height: 100px; /* 限制最大高度 */
+        overflow-y: auto;  /* 超出高度时显示垂直滚动条 */
+        word-break: break-all; /* 长单词自动换行 */
+    }
 
+    .request-data-content {
+        padding: 4px; /* 内边距 */
+    }
+</style>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -18,6 +29,7 @@
             <th width="10%">请求后提取变量</th>
             <th width="8%">开始时间</th>
             <th width="8%">执行耗时(ms)</th>
+
         </tr>
         </thead>
         <tbody>
@@ -26,8 +38,18 @@
         <tr>
             <td>{{ testrecord.id }}</td>
             <td><a href="{% url 'test_case_detail' testrecord.belong_test_case.id%}" target="_blank">{{ testrecord.belong_test_case.case_name }}</a></td>
-            <td>{{ testrecord.request_data }}</td>
-            <td>{{ testrecord.response_data }}</td>
+            <td>
+                    <div class="request-data-container">
+                        <div class="request-data-content">
+                            {{ testrecord.request_data }}
+                        </div>
+                    </div>
+                </td>
+            <td>
+                <div class="scrollable-cell" style="max-height: 150px; overflow-y: auto; word-break: break-all;">
+                {{ testrecord.response_data }}
+                </div>
+            </td>
             <td><a href="{% url 'case_result_diff' testrecord.id %}" target="_blank">对比差异</a></td>
             <td>{{ testrecord.belong_test_case.assert_key }}</td>
 
@@ -42,8 +64,13 @@
             {% else %}
             <td>无</td>
             {% endif %}
-
-            <td>{{ testrecord.extract_var }}</td>
+             <td>
+                    <div class="request-data-container">
+                        <div class="request-data-content">
+                            {{ testrecord.extract_var }}
+                        </div>
+                    </div>
+             </td>
             <td>{{ testrecord.execute_start_time }}</td>
             <td>{{ testrecord.execute_total_time }}</td>
         </tr>
