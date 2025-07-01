@@ -37,7 +37,12 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_interfaceserver" />
+      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_suitecase" />
+      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_casesuitetestcaseexecuterecord" />
+      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_casesuiteexecuterecord" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="0dbd5200-acb4-404d-be71-1a7574967340" />
@@ -45,14 +50,17 @@
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_casesuite" active-filter-id="EMPTY_FILTER" />
-    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_model" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_project" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_model" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.sqlite_sequence" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_casesuitetestcaseexecuterecord" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.django_admin_log" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_interfaceserver" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.django_content_type" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_suitecase" active-filter-id="EMPTY_FILTER" />
-    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.sqlite_sequence" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_testcaseexecuteresult" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_casesuiteexecuterecord" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_testcase" active-filter-id="EMPTY_FILTER" />
-    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.django_admin_log" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="e8d3a5bf-6389-45c9-bd22-9471923cedee" dataset="main.interfacetestplatform_testcaseexecuteresult" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">

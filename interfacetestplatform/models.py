@@ -79,29 +79,14 @@ class SuiteCase(models.Model):
     status = models.IntegerField('是否有效',null=False,default=1,help_text='0：有效，1：无效')
     create_time = models.DateTimeField('创建时间',auto_now=True)
 
-class InterfaceServer(models.Model):
-    id = models.AutoField(primary_key=True)
-    env = models.CharField('环境', max_length=50, null=False,default='')
-    ip = models.CharField('IP', max_length=50, null=False,default='')
-    port = models.CharField('端口', max_length=50, null=False,default='')
-    remark = models.CharField('备注', max_length=100, null=True)
-    create_time = models.DateTimeField('创建时间', auto_now_add=True)
-    update_time = models.DateTimeField('更新时间', auto_now=True, null=True)
-
-    def __str__(self):
-        return self.env
-
-    class Meta:
-        verbose_name = '接口地址配置表'
-        verbose_name_plural = '接口地址配置表'
 
 # 接口服务器配置
 class InterfaceServer(models.Model):
     id = models.AutoField(primary_key=True)
     env = models.CharField('环境', max_length=50, null=False, default='')
     ip = models.CharField('ip', max_length=50, null=False, default='')
-    port = models.CharField('端口', max_length=100, null=True, default='')
-    remark = models.CharField('备注', max_length=100, null=True)
+    port = models.CharField('端口', max_length=100, blank=True,null=True, default='')
+    remark = models.CharField('备注', max_length=100, blank=True,null=True)
     create_time = models.DateTimeField('创建时间', auto_now_add=True)
     update_time = models.DateTimeField('更新时间', auto_now=True, null=True)
 
@@ -134,4 +119,33 @@ class TestCaseExecuteResult(models.Model):
     class Meta:
         verbose_name = '用例执行结果记录表'
         verbose_name_plural = '用例执行结果记录表'
+
+# 用例集合的执行记录
+class CaseSuiteExecuteRecord(models.Model):
+    id = models.AutoField(primary_key=True)
+    case_suite = models.ForeignKey(CaseSuite,on_delete=models.CASCADE,verbose_name='测试集合')
+    run_time = models.IntegerField(verbose_name='延迟时间',null=True,default=0)
+    status = models.IntegerField(verbose_name='执行状态',null=True,default=0)
+    test_result = models.CharField('测试结果', max_length=150, null=True,blank=True)
+    creator = models.CharField(max_length=50, blank=True, null=True)
+    create_time = models.DateTimeField('创建时间', auto_now=True)
+    execute_start_time = models.CharField('执行开始时间', max_length=300, blank=True, null=True)
+
+
+# 用例集合下的用例执行记录
+class CaseSuiteTestCaseExecuteRecord(models.Model):
+    id = models.AutoField(primary_key=True)
+    case_suite_record = models.ForeignKey(CaseSuiteExecuteRecord, on_delete=models.CASCADE,verbose_name='测试集合执行记录')
+    test_case = models.ForeignKey(TestCase, on_delete=models.CASCADE, verbose_name='测试用例')
+    status = models.IntegerField(verbose_name='执行状态', null=True, default=0)
+    exception_info = models.CharField(max_length=2048, blank=True, null=True)
+    request_data = models.CharField('请求体', max_length=1024, null=True)  # {"code": "00", "userid": 22889}
+    response_data = models.CharField('响应字符串', max_length=1024, null=True)  # {"code": "00", "userid": 22889}
+    execute_result = models.CharField('执行结果', max_length=1024, null=True)  # 成功/失败
+    extract_var = models.CharField('关联参数', max_length=1024, null=True)  # 响应成功后提取变量
+    last_time_response_data = models.CharField('上一次响应字符串', max_length=1024,null = True)  # {"code": "00", "userid": 22889}
+    execute_total_time = models.CharField('执行耗时', max_length=1024, null=True)
+    execute_start_time = models.CharField('执行开始时间', max_length=300, blank=True, null=True)
+    execute_end_time = models.CharField('执行结束时间', max_length=300, blank=True, null=True)
+
 
