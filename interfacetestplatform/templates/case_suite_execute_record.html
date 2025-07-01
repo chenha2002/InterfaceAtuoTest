@@ -22,16 +22,21 @@
         {% for case_suite_execute_record in case_suite_execute_records %}
         <tr>
             <td>{{ case_suite_execute_record.id }}</td>
-            <td><a href="">{{ case_suite_execute_record.case_suite_record.case_suite.suite_desc|default:"无描述"}}</a></td>
-            <td>{{ case_suite_execute_record.execute_total_time }}</td>
+            <td><a href="{% url 'suite_case_execute_record' case_suite_execute_record.id %}">{{ case_suite_execute_record.case_suite.suite_desc|default:"无描述"}}</a></td>
+            <td>{{ case_suite_execute_record.run_time }}</td>
             {% if case_suite_execute_record.status %}
             <td>执行完毕</td>
             {% else %}
             <td>待执行</td>
             {% endif %}
-            <td>{{ case_suite_execute_record.execute_result|default_if_none:"" }}</td>
-            <td>{{ case_suite_execute_record.case_suite_record.case_suite.creator|default:"未知创建人" }}</td>
-            <td>{{ case_suite_execute_record.case_suite_record.case_suite.create_time|date:"Y-n-d H:i" }}</td>
+
+            {% if case_suite_execute_record.test_result == '成功' %}
+                <td bgcolor='green'>{{ case_suite_execute_record.test_result }}</td>
+            {% else %}
+                <td bgcolor='red'>{{ case_suite_execute_record.test_result }}</td>
+            {% endif %}
+            <td>{{ case_suite_execute_record.creator|default:"未知创建人" }}</td>
+            <td>{{ case_suite_execute_record.create_time|date:"Y-n-d H:i" }}</td>
         </tr>
         {% endfor %}
 

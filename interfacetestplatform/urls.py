@@ -21,6 +21,10 @@ urlpatterns = [
     # re_path('delete_case_result_diff/(?P<test_record_id>[0-9]+)',result.delete_case_result_diff, name="delete_case_result_diff"),
     re_path('error_show/(?P<test_record_id>[0-9]+)', result.error_show, name="error_show"),
     path('case_suite_execute_record/',result.case_suite_execute_record,name="case_suite_execute_record"),
+    re_path('suite_case_execute_record/(?P<suite_record_id>[0-9]+)', result.suite_case_execute_record, name="suite_case_execute_record"),
+    re_path('suite_case_result_diff/(?P<suite_case_record_id>[0-9]+)', module.suite_case_result_diff, name="suite_case_result_diff"),
+    # re_path('suite_case_exception/(?P<suite_case_record_id>[0-9]+)', result.suite_case_exception, name="suite_case_exception"),
+
 
 
 ]
