@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 
 from ..views import get_paginator
-from ..models import Project, TestCaseExecuteResult
+from ..models import Project, TestCaseExecuteResult,CaseSuiteTestCaseExecuteRecord
 
 
 # 测试结果的展示
@@ -49,3 +49,11 @@ def error_show(request,test_record_id):
 #         test_record_data.delete()
 #         return JsonResponse({'status': 'success'})
 #     return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
+
+# 用例执行结果—菜单项
+@login_required
+def case_suite_execute_record(request):
+    case_suite_execute_records = CaseSuiteTestCaseExecuteRecord.objects.select_related(
+        'case_suite_record__case_suite'
+    )
+    return render(request,'case_suite_execute_record.html',{'case_suite_execute_records': get_paginator(request, case_suite_execute_records)})

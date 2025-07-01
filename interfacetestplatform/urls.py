@@ -20,6 +20,7 @@ urlpatterns = [
     re_path('case_result_diff/(?P<test_record_id>[0-9]+)',result.case_result_diff, name="case_result_diff"),
     # re_path('delete_case_result_diff/(?P<test_record_id>[0-9]+)',result.delete_case_result_diff, name="delete_case_result_diff"),
     re_path('error_show/(?P<test_record_id>[0-9]+)', result.error_show, name="error_show"),
+    path('case_suite_execute_record/',result.case_suite_execute_record,name="case_suite_execute_record"),
 
 
 ]
