@@ -43,7 +43,7 @@ def error_show(request,test_record_id):
 
 # @login_required
 # @csrf_protect
-
+#ces
 # def delete_case_result_diff(request, test_record_id):
 #     if request.method == 'POST':
 #         test_record_data = TestCaseExecuteResult.objects.get(id=test_record_id)
