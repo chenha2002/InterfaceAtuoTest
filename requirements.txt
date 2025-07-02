@@ -1,0 +1,5 @@
+Django~=5.2.3
+redis~=6.2.0
+Booktype~=1.5
+requests~=2.32.4
+django-smart-selects~=1.7.2
