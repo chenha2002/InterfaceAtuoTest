@@ -38,10 +38,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files>
-      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_casesuitetestcaseexecuterecord" />
-      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_testcaseexecuteresult" />
       <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="consoles/Connection" />
-      <object connection-id="0dbd5200-acb4-404d-be71-1a7574967340" object-ref="schemas/db/tables/interfacetestplatform_casesuiteexecuterecord" />
     </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
@@ -50,8 +47,8 @@
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_casesuite" active-filter-id="EMPTY_FILTER" />
-    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_model" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_project" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_model" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.sqlite_sequence" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0dbd5200-acb4-404d-be71-1a7574967340" dataset="db.interfacetestplatform_casesuitetestcaseexecuterecord" active-filter-id="EMPTY_FILTER">
       <filter id="aa602452-435c-438d-92cf-fa74b82f3b0b" name="16" temporary="false" custom-name="false" type="basic" join-type="AND">
